@@ -40,20 +40,58 @@ class CliArgumentParser(val arguments: Array<String>) {
 
     inline fun <reified T> getArg(shortName: String, longName: String): T {
         if (T::class == Int::class) {
-            val unparsedValue = argumentMap[shortName]
-                ?: argumentMap[longName]
-                ?: throw ArgumentNotFoundException(shortName, longName)
+            val unparsedValue = readRawValue(shortName, longName)
             return Integer.parseInt(unparsedValue) as T
         }
 
         if (T::class == Boolean::class) {
-            val unparsedValue = argumentMap[shortName]
-                ?: argumentMap[longName]
-                ?: throw ArgumentNotFoundException(shortName, longName)
+            val unparsedValue = readRawValue(shortName, longName)
             val unparsedToLower = unparsedValue.lowercase()
             return (unparsedToLower == "true" || unparsedToLower == "t") as T
         }
 
+        if (T::class == String::class) {
+            return readRawValue(shortName, longName) as T
+        }
         throw IllegalArgumentException("Unsupported argument of type ${T::class.simpleName}")
+    }
+
+    inline fun <reified T> getArg(shortName: String, longName: String, default: T): T {
+        if (T::class == Int::class) {
+            val unparsedValue = readRawValueOptional(shortName, longName)
+            if (unparsedValue == null) {
+                return default
+            }
+            return Integer.parseInt(unparsedValue) as T
+        }
+
+        if (T::class == Boolean::class) {
+            val unparsedValue = readRawValueOptional(shortName, longName)
+            if (unparsedValue == null) {
+                return default
+            }
+            val unparsedToLower = unparsedValue.lowercase()
+            return (unparsedToLower == "true" || unparsedToLower == "t") as T
+        }
+
+        if (T::class == String::class) {
+            val rawValue = readRawValueOptional(shortName, longName)
+            if (rawValue == null) {
+                return default
+            }
+            return rawValue as T
+        }
+
+        throw IllegalArgumentException("Unsupported argument of type ${T::class.simpleName}")
+    }
+
+    fun readRawValue(shortName: String, longName: String): String {
+        return argumentMap[shortName]
+            ?: argumentMap[longName]
+            ?: throw ArgumentNotFoundException(shortName, longName)
+    }
+
+    fun readRawValueOptional(shortName: String, longName: String): String? {
+        return argumentMap[shortName] ?: argumentMap[longName]
     }
 }
