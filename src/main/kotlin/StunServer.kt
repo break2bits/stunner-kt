@@ -1,6 +1,7 @@
 package com.hal.stunner
 
 import com.hal.stunner.config.StunServerConfiguration
+import com.hal.stunner.message.StunMessage
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.net.DatagramPacket
@@ -22,15 +23,18 @@ class StunServer(private val config: StunServerConfiguration) {
         }
     }
 
-    private fun handlePacketAync(request: DatagramPacket, transmitResponse: (DatagramPacket) -> Unit) {
+    private fun handlePacketAync(packet: DatagramPacket, transmitResponse: (DatagramPacket) -> Unit) {
         runBlocking {
-            launch {
-                transmitResponse(handlePacket(request))
+            launch { // runs async
+                transmitResponse(handlePacket(packet))
             }
         }
     }
 
-    private fun handlePacket(request: DatagramPacket): DatagramPacket {
+    private fun handlePacket(packet: DatagramPacket): DatagramPacket {
+        val request = StunMessage.fromDatagramPacket(packet) // deserialize request packet
+        // val response = handler.handle(message) // handle request and create response
+        // return stunMessageSerializer.toDatagramPacket(response) // serialize response packet
         return DatagramPacket(byteArrayOf(), 0)
     }
 }

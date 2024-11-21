@@ -9,7 +9,6 @@ data class StunHeader(
     val transactionId: ByteArray
 ) {
     companion object {
-
         private const val HEADER_SIZE_BYTES = 20
         private const val MAGIC_COOKIE = 0x2112A442
 

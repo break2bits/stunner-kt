@@ -88,7 +88,7 @@ class CliArgumentParser(val arguments: Array<String>) {
     fun readRawValue(shortName: String, longName: String): String {
         return argumentMap[shortName]
             ?: argumentMap[longName]
-            ?: throw ArgumentNotFoundException(shortName, longName)
+            ?: throw CliArgumentNotFoundException(shortName, longName)
     }
 
     fun readRawValueOptional(shortName: String, longName: String): String? {
