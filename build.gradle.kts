@@ -21,11 +21,6 @@ tasks.test {
 application {
     mainClass = "com.hal.stunner.MainKt"
 }
-//
-//tasks.register<JavaExec>("start") {
-//    mainClass = "com.hal.stunner.Main"
-//    classpath =
-//}
 
 kotlin {
     jvmToolchain {
