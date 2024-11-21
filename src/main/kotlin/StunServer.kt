@@ -38,3 +38,6 @@ class StunServer(private val config: StunServerConfiguration) {
         return DatagramPacket(byteArrayOf(), 0)
     }
 }
+
+// To the extent possible, the handler should be at a higher OSI layer than the server and shouldn't worry
+// about serialization
