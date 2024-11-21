@@ -7,6 +7,5 @@ class StunMessage(private val stunHeader: StunHeader) {
             val header = StunHeader.fromBytes(bytes)
             // parse attributes using length from header
         }
-
     }
 }
