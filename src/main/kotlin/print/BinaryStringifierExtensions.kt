@@ -1,15 +1,10 @@
 package com.hal.stunner.print
 
-// 0b1
-// 0b01
-// 0b10
-// 0b11
-
 private const val ZERO = '0'
 private const val ONE = '1'
 
 // prints lower N digits in 0b format
-fun Int.toPrettyBinaryString(bits: kotlin.Int): String {
+fun Int.toPrettyBinaryString(bits: Int): String {
     var thisShifted = this
     val builder = StringBuilder(bits + 2)
     repeat(bits) {
