@@ -8,30 +8,33 @@ import java.net.InetAddress
 
 class MappedAddressStunAttributeValueParser : StunAttributeValueParser {
     companion object {
+        private const val FAMILY_SIZE_BYTES = 2
+        private const val PORT_SIZE_BYTES = 2
+
         private const val IPV4_ADDRESS_SIZE_BYTES = 4
         private const val IPV6_ADDRESS_SIZE_BYTES = 16
     }
+
     @OptIn(ExperimentalStdlibApi::class)
     override fun parse(bytes: ByteArray, offset: Int, lengthBytes: Int): StunAttributeValue {
-        val addressFamilyValue = BinaryHelper.getBytesAsInt(bytes, offset, 2)
+        val addressFamilyValue = BinaryHelper.getBytesAsInt(bytes, offset, FAMILY_SIZE_BYTES)
         val addressFamily = IpAddressFamily.fromValue(addressFamilyValue)
         if (addressFamily == null) {
             throw StunAttributeParseException("Unrecognized ip address family ${addressFamilyValue.toHexString()}")
         }
-        val port = BinaryHelper.getBytesAsInt(bytes, offset + 2, 2)
+        val port = BinaryHelper.getBytesAsInt(bytes, offset + FAMILY_SIZE_BYTES, PORT_SIZE_BYTES)
 
-        when (addressFamily) {
-            IpAddressFamily.IPV4 -> return MappedAddressStunAttributeValue(
+        return when (addressFamily) {
+            IpAddressFamily.IPV4 -> MappedAddressStunAttributeValue(
                 family = addressFamily,
                 port = port,
-                address = readIpV4Address(bytes, offset + 4)
+                address = readIpV4Address(bytes, offset + FAMILY_SIZE_BYTES + PORT_SIZE_BYTES)
             )
-            IpAddressFamily.IPV6 -> return MappedAddressStunAttributeValue(
+            IpAddressFamily.IPV6 -> MappedAddressStunAttributeValue(
                 family = addressFamily,
                 port = port,
-                address = readIpV6Address(bytes, offset + 4)
+                address = readIpV6Address(bytes, offset + FAMILY_SIZE_BYTES + PORT_SIZE_BYTES)
             )
-            else -> throw RuntimeException("Unreachable!")
         }
     }
 
