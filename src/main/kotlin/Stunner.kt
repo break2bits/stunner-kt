@@ -19,7 +19,7 @@ class Stunner(private val args: Array<String>) {
         val config = readConfig()
         logger.println("Starting stun servier on port ${config.port} using protocol ${config.protocol}")
 
-        // Inject all dependencies
+        // Inject all dependencies the old-fashioned way
         val server = StunServer(
             config = config,
             handler = StunHandler(),
