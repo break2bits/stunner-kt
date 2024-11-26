@@ -2,6 +2,12 @@ package com.hal.stunner
 
 import com.hal.stunner.cli.CliArgumentParser
 import com.hal.stunner.config.StunServerConfiguration
+import com.hal.stunner.message.StunMessageParser
+import com.hal.stunner.message.attribute.StunAttributeListParser
+import com.hal.stunner.message.attribute.StunAttributeParser
+import com.hal.stunner.message.attribute.value.MappedAddressStunAttributeValueParser
+import com.hal.stunner.message.attribute.value.StunAttributeValueParserFactory
+import com.hal.stunner.message.header.StunHeaderParser
 import com.hal.stunner.print.Logger
 import kotlin.system.exitProcess
 
@@ -10,10 +16,23 @@ class Stunner(private val args: Array<String>) {
     private val logger = Logger()
 
     fun start() {
+        val config = readConfig()
         logger.println("Starting stun servier on port ${config.port} using protocol ${config.protocol}")
+
+        // Inject all dependencies
         val server = StunServer(
-            config = readConfig(),
-            handler = StunHandler()
+            config = config,
+            handler = StunHandler(),
+            parser = StunMessageParser(
+                headerParser = StunHeaderParser(),
+                attributeListParser = StunAttributeListParser(
+                    attributeParser = StunAttributeParser(
+                        attributeValueParserFactory = StunAttributeValueParserFactory(
+                            mappedAddressStunAttributeValueParser = MappedAddressStunAttributeValueParser()
+                        )
+                    )
+                )
+            )
         )
         server.listen()
     }

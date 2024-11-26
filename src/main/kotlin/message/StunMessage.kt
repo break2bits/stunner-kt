@@ -1,9 +1,10 @@
 package com.hal.stunner.message
 
-import com.hal.stunner.message.attribute.value.StunAttribute
+import com.hal.stunner.message.attribute.StunAttribute
+import com.hal.stunner.message.header.StunHeader
 
-class StunMessage(
-    private val metadata: StunMetadata,
-    private val header: StunHeader,
-    private val attributes: List<StunAttribute>
+data class StunMessage(
+    val metadata: StunMetadata,
+    val header: StunHeader,
+    val attributes: List<StunAttribute>
 )

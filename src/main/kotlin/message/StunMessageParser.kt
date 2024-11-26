@@ -1,13 +1,17 @@
 package com.hal.stunner.message
 
 import com.hal.stunner.message.attribute.StunAttributeListParser
+import com.hal.stunner.message.header.StunHeaderParser
 import java.net.DatagramPacket
 
-class StunMessageParser(private val attributeListParser: StunAttributeListParser) {
+class StunMessageParser(
+    private val headerParser: StunHeaderParser,
+    private val attributeListParser: StunAttributeListParser
+) {
     fun parse(packet: DatagramPacket): StunMessage {
         val metadata = StunMetadata.fromDatagramPacket(packet)
-        val header = StunHeader.fromBytes(packet.data)
-        val attributes = attributeListParser.parse(header, packet.data)
+        val header = headerParser.parse(packet.data)
+        val attributes = attributeListParser.parse(packet.data, header.messageLengthBytes)
         return StunMessage(
             metadata = metadata,
             header = header,

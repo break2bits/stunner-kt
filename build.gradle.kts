@@ -14,6 +14,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0")
 
     testImplementation(kotlin("test"))
+    testImplementation("org.mockito.kotlin:mockito-kotlin:5.4.0")
 }
 
 tasks.test {

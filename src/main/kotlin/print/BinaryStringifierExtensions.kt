@@ -13,7 +13,7 @@ fun Int.toPrettyBinaryString(bits: Int): String {
         } else {
             builder.append(ONE)
         }
-        thisShifted = thisShifted shr 1
+        thisShifted = thisShifted ushr 1
     }
     builder.append('b')
     builder.append('0')
