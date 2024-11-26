@@ -1,9 +1,5 @@
-package message
+package com.hal.stunner.message
 
-import com.hal.stunner.message.StunMessage
-import com.hal.stunner.message.StunMessageParser
-import com.hal.stunner.message.StunMessageType
-import com.hal.stunner.message.StunMetadata
 import com.hal.stunner.message.attribute.StunAttributeListParser
 import com.hal.stunner.message.header.StunHeader
 import com.hal.stunner.message.header.StunHeaderParser

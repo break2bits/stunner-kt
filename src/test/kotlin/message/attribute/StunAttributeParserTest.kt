@@ -1,9 +1,5 @@
-package message.attribute
+package com.hal.stunner.message.attribute
 
-import com.hal.stunner.message.StunParseException
-import com.hal.stunner.message.attribute.StunAttribute
-import com.hal.stunner.message.attribute.StunAttributeParser
-import com.hal.stunner.message.attribute.StunAttributeType
 import com.hal.stunner.message.attribute.value.StunAttributeValue
 import com.hal.stunner.message.attribute.value.StunAttributeValueParser
 import com.hal.stunner.message.attribute.value.StunAttributeValueParserFactory
@@ -22,7 +18,7 @@ class StunAttributeParserTest {
 
         val parser = StunAttributeParser(mockAttributeValueParserFactory)
 
-        val thrown = assertThrows<StunParseException> {
+        val thrown = assertThrows<StunAttributeParseException> {
             parser.parse(bytes, 1)
         }
         assertContains(thrown.message!!, "Unknown attribute type")

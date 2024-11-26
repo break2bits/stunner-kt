@@ -1,10 +1,8 @@
-package message.header
+package com.hal.stunner.message.header
 
+import com.hal.stunner.helper.toByteArray
 import com.hal.stunner.message.StunMessageType
 import com.hal.stunner.message.StunParseException
-import com.hal.stunner.message.header.StunHeader
-import com.hal.stunner.message.header.StunHeaderParser
-import helper.toByteArray
 import org.junit.jupiter.api.assertThrows
 import kotlin.test.Test
 import kotlin.test.assertContains
@@ -42,7 +40,7 @@ class StunHeaderParserTest {
         val exception = assertThrows<StunParseException> {
             parser.parse(bytes)
         }
-        assertContains(exception.message!!,"Unrecognized message type for value 0000001f")
+        assertContains(exception.message!!,"Unrecognized message type for value 0x0000001f")
     }
 
     @Test

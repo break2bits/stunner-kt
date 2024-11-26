@@ -1,4 +1,4 @@
-package helper
+package com.hal.stunner.helper
 
 // big-endian
 fun Int.toByteArray(numBytes: Int): ByteArray {

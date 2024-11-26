@@ -1,9 +1,5 @@
-package message.attribute
+package com.hal.stunner.message.attribute
 
-import com.hal.stunner.message.attribute.StunAttribute
-import com.hal.stunner.message.attribute.StunAttributeListParser
-import com.hal.stunner.message.attribute.StunAttributeParser
-import com.hal.stunner.message.attribute.StunAttributeType
 import com.hal.stunner.message.attribute.value.StunAttributeValue
 import com.hal.stunner.message.header.StunHeader
 import org.junit.jupiter.api.Test

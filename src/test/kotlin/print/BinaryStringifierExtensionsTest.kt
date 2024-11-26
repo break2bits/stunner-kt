@@ -1,6 +1,5 @@
-package print
+package com.hal.stunner.print
 
-import com.hal.stunner.print.toPrettyBinaryString
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -30,5 +29,14 @@ class BinaryStringifierExtensionsTest {
         val binaryString = number.toPrettyBinaryString(0)
 
         assertEquals("0b", binaryString)
+    }
+
+    @Test
+    fun testToPrettyHexString() {
+        val number = 0xf6
+
+        val hexString = number.toPrettyHexString()
+
+        assertEquals("0x000000f6", hexString)
     }
 }
