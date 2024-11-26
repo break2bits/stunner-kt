@@ -10,7 +10,7 @@ import java.net.DatagramSocket
 class StunServer(
     private val config: StunServerConfiguration,
     private val handler: StunHandler,
-    private val parser: StunMessageParser
+    private val parser: StunMessageParser,
 ) {
     fun listen() {
         val socket = DatagramSocket(config.port)
@@ -27,9 +27,13 @@ class StunServer(
         }
     }
 
-    private fun handlePacketAync(packet: DatagramPacket, transmitResponse: (DatagramPacket) -> Unit) {
+    private fun handlePacketAync(
+        packet: DatagramPacket,
+        transmitResponse: (DatagramPacket) -> Unit,
+    ) {
         runBlocking {
-            launch { // runs async
+            launch {
+                // runs async
                 transmitResponse(handlePacket(packet))
             }
         }

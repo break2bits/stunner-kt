@@ -11,8 +11,9 @@ import com.hal.stunner.message.header.StunHeaderParser
 import com.hal.stunner.print.Logger
 import kotlin.system.exitProcess
 
-class Stunner(private val args: Array<String>) {
-
+class Stunner(
+    private val args: Array<String>
+) {
     private val logger = Logger()
 
     fun start() {
@@ -33,11 +34,11 @@ class Stunner(private val args: Array<String>) {
                 attributeListParser = StunAttributeListParser(
                     attributeParser = StunAttributeParser(
                         attributeValueParserFactory = StunAttributeValueParserFactory(
-                            mappedAddressStunAttributeValueParser = MappedAddressStunAttributeValueParser()
-                        )
-                    )
-                )
-            )
+                            mappedAddressStunAttributeValueParser = MappedAddressStunAttributeValueParser(),
+                        ),
+                    ),
+                ),
+            ),
         )
     }
 
@@ -48,7 +49,7 @@ class Stunner(private val args: Array<String>) {
             val protocol = parser.getArg<String>("s", "scheme", "udp")
             return StunServerConfiguration(
                 port = port,
-                protocol = protocol
+                protocol = protocol,
             )
         } catch (e: Exception) {
             logger.printErrln(e.message)
