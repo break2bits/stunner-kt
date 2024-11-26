@@ -10,9 +10,11 @@ class Stunner(private val args: Array<String>) {
     private val logger = Logger()
 
     fun start() {
-        val config = readConfig()
         logger.println("Starting stun servier on port ${config.port} using protocol ${config.protocol}")
-        val server = StunServer(config)
+        val server = StunServer(
+            config = readConfig(),
+            handler = StunHandler()
+        )
         server.listen()
     }
 

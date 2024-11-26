@@ -5,7 +5,7 @@ enum class StunMessageType(val value: Int) {
     BINDING_RESPONSE(0x0101);
 
     companion object {
-        fun forValue(value: Int): StunMessageType? {
+        fun fromValue(value: Int): StunMessageType? {
             return entries.find { it.value == value }
         }
     }

@@ -1,5 +1,6 @@
 package com.hal.stunner.message
 
+import com.hal.stunner.binary.BinaryHelper
 import com.hal.stunner.print.toPrettyBinaryString
 
 data class StunHeader(
@@ -9,6 +10,8 @@ data class StunHeader(
     val transactionId: ByteArray
 ) {
     companion object {
+        const val SIZE_BYTES = 20
+
         private const val HEADER_SIZE_BYTES = 20
         private const val MAGIC_COOKIE = 0x2112A442
 
@@ -17,6 +20,9 @@ data class StunHeader(
 
         private const val LENGTH_START_IDX = 2
         private const val LENGTH_SIZE_BYTES = 2
+
+        private const val MAGIC_COOKIE_START_IDX = 4
+        private const val MAGIC_COOKIE_SIZE_BYES = 4
 
         private const val TRANSACTION_ID_START_IDX = 8
         private const val TRANSACTION_ID_SIZE_BYTES = 12
@@ -54,7 +60,7 @@ data class StunHeader(
         }
 
         private fun getMagicCookie(bytes: ByteArray): Int {
-            return getBytesAsInt(bytes, 4, 4)
+            return BinaryHelper.getBytesAsInt(bytes, MAGIC_COOKIE_START_IDX, MAGIC_COOKIE_SIZE_BYES)
         }
 
         private fun getTransactionId(bytes: ByteArray): ByteArray {
@@ -66,8 +72,8 @@ data class StunHeader(
         }
 
         private fun getType(bytes: ByteArray): StunMessageType {
-            val messageTypeValue = getBytesAsInt(bytes, TYPE_START_IDX, TYPE_SIZE_BYTES)
-            val messageType = StunMessageType.forValue(messageTypeValue)
+            val messageTypeValue = BinaryHelper.getBytesAsInt(bytes, TYPE_START_IDX, TYPE_SIZE_BYTES)
+            val messageType = StunMessageType.fromValue(messageTypeValue)
             if (messageType == null) {
                 throw StunParseException("Unrecognized message type for value ${messageTypeValue.toPrettyBinaryString(16)}")
             }
@@ -75,17 +81,7 @@ data class StunHeader(
         }
 
         private fun getLength(bytes: ByteArray): Int {
-            return getBytesAsInt(bytes, LENGTH_START_IDX, LENGTH_SIZE_BYTES)
-        }
-
-        private fun getBytesAsInt(bytes: ByteArray, start: Int, num: Int): Int {
-            var accumulator = 0
-            for (i in start..(start + num)) {
-                val byte = bytes[i]
-                accumulator = accumulator or byte.toInt()
-                accumulator shl 8
-            }
-            return accumulator
+            return BinaryHelper.getBytesAsInt(bytes, LENGTH_START_IDX, LENGTH_SIZE_BYTES)
         }
     }
 }

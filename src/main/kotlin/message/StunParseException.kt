@@ -1,3 +1,3 @@
 package com.hal.stunner.message
 
-class StunParseException(message: String) : Exception(message)
+open class StunParseException(message: String) : Exception(message)
