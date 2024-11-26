@@ -8,7 +8,7 @@ fun Int.toPrettyBinaryString(bits: Int): String {
     var thisShifted = this
     val builder = StringBuilder(bits + 2)
     repeat(bits) {
-        if (this % 2 == 0) {
+        if (thisShifted % 2 == 0) {
             builder.append(ZERO)
         } else {
             builder.append(ONE)
