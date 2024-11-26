@@ -11,9 +11,7 @@ import com.hal.stunner.message.header.StunHeaderParser
 import com.hal.stunner.print.Logger
 import kotlin.system.exitProcess
 
-class Stunner(
-    private val args: Array<String>
-) {
+class Stunner(private val args: Array<String>) {
     private val logger = Logger()
 
     fun start() {
