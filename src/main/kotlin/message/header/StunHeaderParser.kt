@@ -3,10 +3,10 @@ package com.hal.stunner.message.header
 import com.hal.stunner.binary.BinaryHelper
 import com.hal.stunner.message.StunMessageType
 import com.hal.stunner.message.StunParseException
+import com.hal.stunner.print.toPrettyHexString
 
 class StunHeaderParser {
 
-    @OptIn(ExperimentalStdlibApi::class)
     fun parse(bytes: ByteArray): StunHeader {
         if (bytes.size < StunHeader.HEADER_SIZE_BYTES) {
             throw StunParseException("Stun message must be at least ${StunHeader.HEADER_SIZE_BYTES} bytes")
@@ -27,7 +27,7 @@ class StunHeaderParser {
         val magicCookie = getMagicCookie(bytes)
         val expectedMagicCookie = StunHeader.MAGIC_COOKIE
         if (magicCookie != expectedMagicCookie) {
-            throw StunParseException("Incorrect magic cookie value. Received ${magicCookie.toHexString()} but expected ${StunHeader.MAGIC_COOKIE}")
+            throw StunParseException("Incorrect magic cookie value. Received ${magicCookie.toPrettyHexString()} but expected ${StunHeader.MAGIC_COOKIE}")
         }
 
         val transactionId = getTransactionId(bytes)
@@ -51,12 +51,11 @@ class StunHeaderParser {
         return (byte.toInt() shr 6) == 0
     }
 
-    @OptIn(ExperimentalStdlibApi::class)
     private fun getType(bytes: ByteArray): StunMessageType {
         val messageTypeValue = BinaryHelper.getBytesAsInt(bytes, StunHeader.TYPE_START_IDX, StunHeader.TYPE_SIZE_BYTES)
         val messageType = StunMessageType.fromValue(messageTypeValue)
         if (messageType == null) {
-            throw StunParseException("Unrecognized message type for value ${messageTypeValue.toHexString()}")
+            throw StunParseException("Unrecognized message type for value ${messageTypeValue.toPrettyHexString()}")
         }
         return messageType
     }

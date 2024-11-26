@@ -2,7 +2,7 @@ package com.hal.stunner.message.attribute
 
 import com.hal.stunner.message.attribute.value.StunAttributeValue
 
-class StunAttribute(
+data class StunAttribute(
     val type: StunAttributeType,
     val valueLengthBytes: Int,
     val value: StunAttributeValue

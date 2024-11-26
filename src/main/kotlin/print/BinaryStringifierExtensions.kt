@@ -19,3 +19,9 @@ fun Int.toPrettyBinaryString(bits: Int): String {
     builder.append('0')
     return builder.reverse().toString()
 }
+
+
+@OptIn(ExperimentalStdlibApi::class)
+fun Int.toPrettyHexString(): String {
+    return "0x" + this.toHexString()
+}

@@ -3,6 +3,7 @@ package com.hal.stunner.message.attribute.value
 import com.hal.stunner.binary.BinaryHelper
 import com.hal.stunner.message.attribute.IpAddressFamily
 import com.hal.stunner.message.attribute.StunAttributeParseException
+import com.hal.stunner.print.toPrettyHexString
 import java.net.Inet4Address
 import java.net.InetAddress
 
@@ -15,12 +16,11 @@ class MappedAddressStunAttributeValueParser : StunAttributeValueParser {
         private const val IPV6_ADDRESS_SIZE_BYTES = 16
     }
 
-    @OptIn(ExperimentalStdlibApi::class)
     override fun parse(bytes: ByteArray, offset: Int, lengthBytes: Int): StunAttributeValue {
         val addressFamilyValue = BinaryHelper.getBytesAsInt(bytes, offset, FAMILY_SIZE_BYTES)
         val addressFamily = IpAddressFamily.fromValue(addressFamilyValue)
         if (addressFamily == null) {
-            throw StunAttributeParseException("Unrecognized ip address family ${addressFamilyValue.toHexString()}")
+            throw StunAttributeParseException("Unrecognized ip address family ${addressFamilyValue.toPrettyHexString()}")
         }
         val port = BinaryHelper.getBytesAsInt(bytes, offset + FAMILY_SIZE_BYTES, PORT_SIZE_BYTES)
 
