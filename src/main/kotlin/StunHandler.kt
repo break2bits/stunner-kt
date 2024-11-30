@@ -1,10 +1,8 @@
 package com.hal.stunner
 
 import com.hal.stunner.binary.toByteArray
-import com.hal.stunner.message.StunMessage
-import com.hal.stunner.message.StunMessageType
-import com.hal.stunner.message.StunMetadata
-import com.hal.stunner.message.StunRequest
+import com.hal.stunner.binary.xor
+import com.hal.stunner.message.*
 import com.hal.stunner.message.attribute.IpAddressFamily
 import com.hal.stunner.message.attribute.StunAttribute
 import com.hal.stunner.message.attribute.StunAttributeType
@@ -12,50 +10,60 @@ import com.hal.stunner.message.attribute.value.XorMappedAddressStunAttributeValu
 import com.hal.stunner.message.header.StunHeader
 import java.net.Inet4Address
 import java.net.Inet6Address
-import java.nio.ByteBuffer
 
 class StunHandler {
 
     // handles binding only right now
     fun handle(request: StunRequest): StunMessage {
-        throw NotImplementedError("handle is not implemented")
+        if (request.message.header.type != StunMessageType.BINDING_REQUEST) {
+            throw NotImplementedError("handle is not implemented")
+        }
+        return StunMessageBuilder
+            .fromTransactionId(request.message.header.transactionId)
+            .addAttribute(buildXorMappedAddressStunAttribute(request))
+            .build()
     }
-//        throw NotImplementedError("handle is not implemented")
-//        if (request.message.header.type == StunMessageType.BINDING_REQUEST)
-//        val response = StunMessage(
-//            header = StunHeader(
-//                type = StunMessageType.BINDING_RESPONSE,
-//                messageLengthBytes = messageLengthBytes,
-//                magicCookie = StunHeader.MAGIC_COOKIE,
-//                transactionId = request.message.header.transactionId
-//            ),
-//            attributes =
-//        )
-//    }
-//
-//    private fun buildXorMappedAddressStunAttribute(request: StunRequest): StunAttribute {
-//        return StunAttribute(
-//            type = StunAttributeType.XOR_MAPPED_ADDRESS,
-//            value = XorMappedAddressStunAttributeValue(
-//                family = getIpAddressFamily(request.metadata),
-//                xport = getXport(request.metadata)
-//            )
-//        )
-//    }
-//
-//    private fun getIpAddressFamily(metadata: StunMetadata): IpAddressFamily {
-//        if (metadata.ip is Inet4Address) {
-//            return IpAddressFamily.IPV4
-//        } else if (metadata.ip is Inet6Address) {
-//            return IpAddressFamily.IPV6
-//        } else {
-//            throw BadRequestException("Unrecognized inet address type in request metadata")
-//        }
-//    }
-//
-//    private fun getXport(metadata: StunMetadata): ByteArray {
-//        val portBytes = metadata.port.toByteArray()
-//        val magicCookieBytes = StunHeader.MAGIC_COOKIE.toByteArray().slice(IntRange(0, 1))
-//
-//    }
+
+    private fun buildXorMappedAddressStunAttribute(request: StunRequest): StunAttribute {
+        val family = getIpAddressFamily(request.metadata)
+        return StunAttribute(
+            type = StunAttributeType.XOR_MAPPED_ADDRESS,
+            valueLengthBytes = getValueLengthBytes(family),
+            value = XorMappedAddressStunAttributeValue(
+                family = family,
+                xport = getXport(request.metadata),
+                xAddress = getXaddress(family, request.metadata, request.message.header.transactionId)
+            )
+        )
+    }
+
+    private fun getIpAddressFamily(metadata: StunMetadata): IpAddressFamily {
+        return when (metadata.ip) {
+            is Inet4Address -> IpAddressFamily.IPV4
+            is Inet6Address -> IpAddressFamily.IPV6
+            else -> throw BadRequestException("Unrecognized inet address type in request metadata")
+        }
+    }
+
+    private fun getXport(metadata: StunMetadata): ByteArray {
+        val portBytes = metadata.port.toByteArray()
+        val magicCookieBytes = StunHeader.MAGIC_COOKIE.toByteArray().sliceArray(IntRange(0, 1))
+        return portBytes xor magicCookieBytes
+    }
+
+    private fun getXaddress(family: IpAddressFamily, metadata: StunMetadata, transactionId: ByteArray): ByteArray {
+        val magicCookieBytes = StunHeader.MAGIC_COOKIE.toByteArray()
+        val address = metadata.ip.address
+        return when (family) {
+            IpAddressFamily.IPV4 -> address xor magicCookieBytes
+            IpAddressFamily.IPV6 -> address xor magicCookieBytes.plus(transactionId)
+        }
+    }
+
+    private fun getValueLengthBytes(family: IpAddressFamily): Int {
+        return when (family) {
+            IpAddressFamily.IPV4 -> 8
+            IpAddressFamily.IPV6 -> 20
+        }
+    }
 }

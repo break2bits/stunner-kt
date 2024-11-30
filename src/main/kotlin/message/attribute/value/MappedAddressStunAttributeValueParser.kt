@@ -15,6 +15,13 @@ class MappedAddressStunAttributeValueParser : StunAttributeValueParser {
 
         private const val IPV4_ADDRESS_SIZE_BYTES = 4
         private const val IPV6_ADDRESS_SIZE_BYTES = 16
+
+        fun getExpectedValueLengthBytes(family: IpAddressFamily): Int {
+            return when (family) {
+                IpAddressFamily.IPV4 -> FAMILY_SIZE_BYTES + PORT_SIZE_BYTES + IPV4_ADDRESS_SIZE_BYTES
+                IpAddressFamily.IPV6 -> FAMILY_SIZE_BYTES + PORT_SIZE_BYTES + IPV6_ADDRESS_SIZE_BYTES
+            }
+        }
     }
 
     override fun parse(bytes: ByteArray, offset: Int, lengthBytes: Int): StunAttributeValue {
@@ -23,7 +30,7 @@ class MappedAddressStunAttributeValueParser : StunAttributeValueParser {
         if (addressFamily == null) {
             throw StunAttributeParseException("Unrecognized ip address family ${addressFamilyValue.toPrettyHexString()}")
         }
-        // should we validate that lengthBytes matches the address family?
+        validateLengthsMatch(lengthBytes, addressFamily)
 
         val port = BinaryHelper.getBytesAsInt(bytes, offset + FAMILY_SIZE_BYTES, PORT_SIZE_BYTES)
 
@@ -49,5 +56,12 @@ class MappedAddressStunAttributeValueParser : StunAttributeValueParser {
     private fun readIpV6Address(bytes: ByteArray, offset: Int): Inet6Address {
         val addressBytes = bytes.sliceArray(IntRange(offset, offset + IPV6_ADDRESS_SIZE_BYTES - 1))
         return InetAddress.getByAddress(addressBytes) as Inet6Address
+    }
+
+    private fun validateLengthsMatch(lengthBytes: Int, family: IpAddressFamily) {
+        if (lengthBytes != getExpectedValueLengthBytes(family)) {
+            throw StunAttributeParseException("Expected length for mapped address of family ${family.name} " +
+                    "does not match attribute value length of $lengthBytes")
+        }
     }
 }
