@@ -5,6 +5,7 @@ import com.hal.stunner.message.attribute.IpAddressFamily
 import com.hal.stunner.message.attribute.StunAttributeParseException
 import com.hal.stunner.print.toPrettyHexString
 import java.net.Inet4Address
+import java.net.Inet6Address
 import java.net.InetAddress
 
 class MappedAddressStunAttributeValueParser : StunAttributeValueParser {
@@ -22,6 +23,8 @@ class MappedAddressStunAttributeValueParser : StunAttributeValueParser {
         if (addressFamily == null) {
             throw StunAttributeParseException("Unrecognized ip address family ${addressFamilyValue.toPrettyHexString()}")
         }
+        // should we validate that lengthBytes matches the address family?
+
         val port = BinaryHelper.getBytesAsInt(bytes, offset + FAMILY_SIZE_BYTES, PORT_SIZE_BYTES)
 
         return when (addressFamily) {
@@ -39,12 +42,12 @@ class MappedAddressStunAttributeValueParser : StunAttributeValueParser {
     }
 
     private fun readIpV4Address(bytes: ByteArray, offset: Int): Inet4Address {
-        val addressBytes = bytes.sliceArray(IntRange(offset, offset + IPV4_ADDRESS_SIZE_BYTES))
+        val addressBytes = bytes.sliceArray(IntRange(offset, offset + IPV4_ADDRESS_SIZE_BYTES - 1))
         return InetAddress.getByAddress(addressBytes) as Inet4Address
     }
 
-    private fun readIpV6Address(bytes: ByteArray, offset: Int): Inet4Address {
-        val addressBytes = bytes.sliceArray(IntRange(offset, offset + IPV6_ADDRESS_SIZE_BYTES))
-        return InetAddress.getByAddress(addressBytes) as Inet4Address
+    private fun readIpV6Address(bytes: ByteArray, offset: Int): Inet6Address {
+        val addressBytes = bytes.sliceArray(IntRange(offset, offset + IPV6_ADDRESS_SIZE_BYTES - 1))
+        return InetAddress.getByAddress(addressBytes) as Inet6Address
     }
 }
