@@ -35,16 +35,17 @@ class StunMessageParserTest {
             mockAttributeListParser
         )
 
-        val message = parser.parse(packet)
-
-        val expected = StunMessage(
+        val request = parser.parse(packet)
+        val expected = StunRequest(
             metadata = StunMetadata(
                 ip = ipAddress,
                 port = 80
             ),
-            header = expectedHeader,
-            attributes = emptyList()
+            message = StunMessage(
+                header = expectedHeader,
+                attributes = emptyList()
+            )
         )
-        assertEquals(message, expected)
+        assertEquals(request, expected)
     }
 }

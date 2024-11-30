@@ -8,14 +8,16 @@ class StunMessageParser(
     private val headerParser: StunHeaderParser,
     private val attributeListParser: StunAttributeListParser
 ) {
-    fun parse(packet: DatagramPacket): StunMessage {
+    fun parse(packet: DatagramPacket): StunRequest {
         val metadata = StunMetadata.fromDatagramPacket(packet)
         val header = headerParser.parse(packet.data)
         val attributes = attributeListParser.parse(packet.data, header.messageLengthBytes)
-        return StunMessage(
+        return StunRequest(
             metadata = metadata,
-            header = header,
-            attributes = attributes
+            message = StunMessage(
+                header = header,
+                attributes = attributes
+            ),
         )
     }
 }
