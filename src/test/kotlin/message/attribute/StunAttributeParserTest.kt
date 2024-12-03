@@ -1,6 +1,5 @@
 package com.hal.stunner.message.attribute
 
-import com.hal.stunner.message.attribute.value.StunAttributeValue
 import com.hal.stunner.message.attribute.value.StunAttributeValueParser
 import com.hal.stunner.message.attribute.value.StunAttributeValueParserFactory
 import org.junit.jupiter.api.assertThrows

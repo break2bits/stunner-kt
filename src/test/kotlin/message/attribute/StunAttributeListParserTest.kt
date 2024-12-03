@@ -1,6 +1,5 @@
 package com.hal.stunner.message.attribute
 
-import com.hal.stunner.message.attribute.value.StunAttributeValue
 import com.hal.stunner.message.header.StunHeader
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.mock
