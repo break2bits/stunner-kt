@@ -5,6 +5,7 @@ import com.hal.stunner.message.header.StunHeader
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
+import java.nio.ByteBuffer
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
 
@@ -27,14 +28,14 @@ class StunAttributeListParserTest {
         val firstAttribute = StunAttribute(
             type = StunAttributeType.MAPPED_ADDRESS,
             valueLengthBytes = 4,
-            value = object : StunAttributeValue {}
+            value = { _: ByteBuffer -> }
         )
         whenever(mockAttributeParser.parse(bytes, StunHeader.SIZE_BYTES)).thenReturn(firstAttribute)
 
         val secondAttribute = StunAttribute(
             type = StunAttributeType.XOR_MAPPED_ADDRESS,
             valueLengthBytes = 4,
-            value = object : StunAttributeValue {}
+            value = { _: ByteBuffer -> }
         )
         whenever(mockAttributeParser.parse(bytes, StunHeader.SIZE_BYTES + 8)).thenReturn(secondAttribute)
 

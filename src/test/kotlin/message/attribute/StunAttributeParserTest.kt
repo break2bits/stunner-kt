@@ -6,6 +6,7 @@ import com.hal.stunner.message.attribute.value.StunAttributeValueParserFactory
 import org.junit.jupiter.api.assertThrows
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
+import java.nio.ByteBuffer
 import kotlin.test.Test
 import kotlin.test.assertContains
 import kotlin.test.assertEquals
@@ -28,7 +29,7 @@ class StunAttributeParserTest {
     fun parse() {
         val attributeValueLengthBytes: Byte = 5
         val bytes = byteArrayOf(0x00, 0x00, 0x01, 0x00, attributeValueLengthBytes)
-        val attributeValue = object : StunAttributeValue {}
+        val attributeValue = {_: ByteBuffer -> }
 
         val mockStunAttributeValueParser = mock<StunAttributeValueParser>()
         whenever(mockStunAttributeValueParser.parse(bytes, 5, attributeValueLengthBytes.toInt())).thenReturn(attributeValue)
