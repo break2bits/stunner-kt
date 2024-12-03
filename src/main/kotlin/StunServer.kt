@@ -2,6 +2,7 @@ package com.hal.stunner
 
 import com.hal.stunner.config.StunServerConfiguration
 import com.hal.stunner.message.StunMessageParser
+import com.hal.stunner.message.StunMessageSerializer
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.net.DatagramPacket
@@ -11,6 +12,7 @@ class StunServer(
     private val config: StunServerConfiguration,
     private val handler: StunHandler,
     private val parser: StunMessageParser,
+    private val serializer: StunMessageSerializer
 ) {
     fun listen() {
         val socket = DatagramSocket(config.port)
@@ -42,10 +44,6 @@ class StunServer(
     private fun handlePacket(packet: DatagramPacket): DatagramPacket {
         val request = parser.parse(packet) // deserialize request packet
         val response = handler.handle(request) // handle request and create response
-        // return stunMessageSerializer.toDatagramPacket(response) // serialize response packet
-        return DatagramPacket(byteArrayOf(), 0)
+        return serializer.serialize(response)
     }
 }
-
-// To the extent possible, the handler should be at a higher OSI layer than the server and shouldn't worry
-// about serialization

@@ -3,6 +3,7 @@ package com.hal.stunner
 import com.hal.stunner.cli.CliArgumentParser
 import com.hal.stunner.config.StunServerConfiguration
 import com.hal.stunner.message.StunMessageParser
+import com.hal.stunner.message.StunMessageSerializer
 import com.hal.stunner.message.attribute.StunAttributeListParser
 import com.hal.stunner.message.attribute.StunAttributeParser
 import com.hal.stunner.message.attribute.value.MappedAddressStunAttributeValueParser
@@ -37,6 +38,7 @@ class Stunner(private val args: Array<String>) {
                     ),
                 ),
             ),
+            serializer = StunMessageSerializer()
         )
     }
 

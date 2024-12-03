@@ -33,7 +33,7 @@ class StunMessageBuilder private constructor(
     }
 
     private fun computeMessageLengthBytes(): Int {
-        return StunHeader.SIZE_BYTES + computeAttributesLengthBytes()
+        return computeAttributesLengthBytes()
     }
 
     private fun computeAttributesLengthBytes(): Int {

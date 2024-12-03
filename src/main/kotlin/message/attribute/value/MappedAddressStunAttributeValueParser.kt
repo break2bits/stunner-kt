@@ -3,6 +3,10 @@ package com.hal.stunner.message.attribute.value
 import com.hal.stunner.binary.BinaryHelper
 import com.hal.stunner.message.attribute.IpAddressFamily
 import com.hal.stunner.message.attribute.StunAttributeParseException
+import com.hal.stunner.message.attribute.value.MappedAddressStunAttributeValue.Companion.FAMILY_SIZE_BYTES
+import com.hal.stunner.message.attribute.value.MappedAddressStunAttributeValue.Companion.IPV4_ADDRESS_SIZE_BYTES
+import com.hal.stunner.message.attribute.value.MappedAddressStunAttributeValue.Companion.IPV6_ADDRESS_SIZE_BYTES
+import com.hal.stunner.message.attribute.value.MappedAddressStunAttributeValue.Companion.PORT_SIZE_BYTES
 import com.hal.stunner.print.toPrettyHexString
 import java.net.Inet4Address
 import java.net.Inet6Address
@@ -10,12 +14,6 @@ import java.net.InetAddress
 
 class MappedAddressStunAttributeValueParser : StunAttributeValueParser {
     companion object {
-        private const val FAMILY_SIZE_BYTES = 2
-        private const val PORT_SIZE_BYTES = 2
-
-        private const val IPV4_ADDRESS_SIZE_BYTES = 4
-        private const val IPV6_ADDRESS_SIZE_BYTES = 16
-
         fun getExpectedValueLengthBytes(family: IpAddressFamily): Int {
             return when (family) {
                 IpAddressFamily.IPV4 -> FAMILY_SIZE_BYTES + PORT_SIZE_BYTES + IPV4_ADDRESS_SIZE_BYTES

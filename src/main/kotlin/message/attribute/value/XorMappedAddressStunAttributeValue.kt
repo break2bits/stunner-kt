@@ -1,12 +1,19 @@
 package com.hal.stunner.message.attribute.value
 
 import com.hal.stunner.message.attribute.IpAddressFamily
+import java.nio.ByteBuffer
 
 data class XorMappedAddressStunAttributeValue(
     val family: IpAddressFamily,
     val xport: ByteArray,
     val xAddress: ByteArray
 ) : StunAttributeValue {
+    override fun writeBytes(buffer: ByteBuffer) {
+        buffer.putShort(family.value.toShort())
+        buffer.put(xport)
+        buffer.put(xAddress)
+    }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
