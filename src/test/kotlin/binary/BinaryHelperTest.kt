@@ -38,4 +38,16 @@ class BinaryHelperTest {
             result
         )
     }
+
+    @Test
+    fun testShortExtension_toByteArray() {
+        val result: Short = -1
+
+        val bytes = result.toByteArray()
+
+        assertContentEquals(
+            byteArrayOf(-1, -1),
+            bytes
+        )
+    }
 }
