@@ -5,7 +5,6 @@ import com.hal.stunner.message.attribute.StunAttribute
 import com.hal.stunner.message.attribute.StunAttributeType
 import com.hal.stunner.message.attribute.value.StunAttributeValue
 import com.hal.stunner.message.header.StunHeader
-import java.net.DatagramPacket
 import java.nio.ByteBuffer
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
