@@ -4,6 +4,7 @@ import com.hal.stunner.handler.StunMessageBuilder
 import com.hal.stunner.message.attribute.StunAttribute
 import com.hal.stunner.message.attribute.StunAttributeType
 import com.hal.stunner.message.header.StunHeader
+import org.mockito.kotlin.mock
 import java.nio.ByteBuffer
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -13,6 +14,13 @@ class StunMessageBuilderTest {
     @Test
     fun testBuild() {
         val txnId = byteArrayOf(0x0a)
+
+        val builder = StunMessageBuilder(
+            stunMessageSerializer = mock(),
+            fingerprintCalculator = mock(),
+            transactionId = txnId
+        )
+
         val firstAttribute = StunAttribute(
             type = StunAttributeType.XOR_MAPPED_ADDRESS,
             valueLengthBytes = 1,
@@ -33,10 +41,10 @@ class StunMessageBuilderTest {
             attributes = listOf(firstAttribute, secondAttribute)
         )
 
-        val builder = StunMessageBuilder.fromTransactionId(txnId)
-        builder.addAttribute(firstAttribute)
-        builder.addAttribute(secondAttribute)
-        val message = builder.build()
+        val message = builder
+            .addAttribute(firstAttribute)
+            .addAttribute(secondAttribute)
+            .build()
 
         assertEquals(
             expectedMessage,

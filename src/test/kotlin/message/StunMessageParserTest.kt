@@ -43,9 +43,11 @@ class StunMessageParserTest {
             ),
             message = StunMessage(
                 header = expectedHeader,
-                attributes = emptyList()
-            )
+                attributes = emptyList(),
+            ),
+            rawBytes = byteArrayOf()
         )
+
         assertEquals(request, expected)
     }
 }

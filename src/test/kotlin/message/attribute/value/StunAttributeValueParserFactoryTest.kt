@@ -16,7 +16,8 @@ class StunAttributeValueParserFactoryTest {
         val mockMappedAddressStunAttributeValueParser = mock<MappedAddressStunAttributeValueParser>()
 
         val factory = StunAttributeValueParserFactory(
-            mappedAddressStunAttributeValueParser = mockMappedAddressStunAttributeValueParser
+            mappedAddressStunAttributeValueParser = mockMappedAddressStunAttributeValueParser,
+            fingerprintStunAttributeValueParser = mock()
         )
 
         val attributeValueParser = factory.get(StunAttributeType.MAPPED_ADDRESS)
@@ -32,7 +33,8 @@ class StunAttributeValueParserFactoryTest {
         val mockMappedAddressStunAttributeValueParser = mock<MappedAddressStunAttributeValueParser>()
 
         val factory = StunAttributeValueParserFactory(
-            mappedAddressStunAttributeValueParser = mockMappedAddressStunAttributeValueParser
+            mappedAddressStunAttributeValueParser = mockMappedAddressStunAttributeValueParser,
+            fingerprintStunAttributeValueParser = mock()
         )
 
         val thrown = assertThrows<StunAttributeParseException> {
