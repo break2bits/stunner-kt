@@ -1,9 +1,9 @@
-package com.hal.stunner
+package com.hal.stunner.handler
 
+import com.hal.stunner.BadRequestException
 import com.hal.stunner.binary.toByteArray
 import com.hal.stunner.binary.xor
 import com.hal.stunner.message.StunMessage
-import com.hal.stunner.message.StunMessageBuilder
 import com.hal.stunner.message.StunMessageType
 import com.hal.stunner.message.StunMetadata
 import com.hal.stunner.message.StunRequest
@@ -15,17 +15,27 @@ import com.hal.stunner.message.header.StunHeader
 import java.net.Inet4Address
 import java.net.Inet6Address
 
-class StunHandler {
+class StunHandler(
+    private val fingerprintAttributeValueValidator: FingerprintAttributeValueValidator,
+    private val stunMessageBuilderFactory: StunMessageBuilderFactory
+) {
 
-    // handles binding only right now
     fun handle(request: StunRequest): StunMessage {
         if (request.message.header.type != StunMessageType.BINDING_REQUEST) {
             throw NotImplementedError("handle is not implemented")
         }
-        return StunMessageBuilder
+
+        val includeFingerprint = fingerprintAttributeValueValidator.maybeValidate(request.message, request.rawBytes)
+
+        val builder = stunMessageBuilderFactory
             .fromTransactionId(request.message.header.transactionId)
             .addAttribute(buildXorMappedAddressStunAttribute(request))
-            .build()
+
+        if (includeFingerprint) {
+            builder.withFingerprint()
+        }
+
+        return builder.build()
     }
 
     private fun buildXorMappedAddressStunAttribute(request: StunRequest): StunAttribute {

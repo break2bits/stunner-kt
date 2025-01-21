@@ -2,10 +2,15 @@ package com.hal.stunner
 
 import com.hal.stunner.cli.CliArgumentParser
 import com.hal.stunner.config.StunServerConfiguration
+import com.hal.stunner.handler.FingerprintAttributeValueValidator
+import com.hal.stunner.handler.FingerprintCalculator
+import com.hal.stunner.handler.StunHandler
+import com.hal.stunner.handler.StunMessageBuilderFactory
 import com.hal.stunner.message.StunMessageParser
 import com.hal.stunner.message.StunMessageSerializer
 import com.hal.stunner.message.attribute.StunAttributeListParser
 import com.hal.stunner.message.attribute.StunAttributeParser
+import com.hal.stunner.message.attribute.value.FingerprintStunAttributeValueParser
 import com.hal.stunner.message.attribute.value.MappedAddressStunAttributeValueParser
 import com.hal.stunner.message.attribute.value.StunAttributeValueParserFactory
 import com.hal.stunner.message.header.StunHeaderParser
@@ -25,15 +30,25 @@ class Stunner(private val args: Array<String>) {
     }
 
     private fun buildServer(config: StunServerConfiguration): StunServer {
+        val fingerprintCalculator = FingerprintCalculator()
         return StunServer(
             config = config,
-            handler = StunHandler(),
+            handler = StunHandler(
+                fingerprintAttributeValueValidator = FingerprintAttributeValueValidator(
+                    fingerprintCalculator = fingerprintCalculator
+                ),
+                stunMessageBuilderFactory = StunMessageBuilderFactory(
+                    stunMessageSerializer = StunMessageSerializer(),
+                    fingerprintCalculator = fingerprintCalculator
+                )
+            ),
             parser = StunMessageParser(
                 headerParser = StunHeaderParser(),
                 attributeListParser = StunAttributeListParser(
                     attributeParser = StunAttributeParser(
                         attributeValueParserFactory = StunAttributeValueParserFactory(
                             mappedAddressStunAttributeValueParser = MappedAddressStunAttributeValueParser(),
+                            fingerprintStunAttributeValueParser = FingerprintStunAttributeValueParser()
                         ),
                     ),
                 ),

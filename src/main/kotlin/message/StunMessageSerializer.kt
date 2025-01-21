@@ -7,12 +7,16 @@ import java.nio.ByteBuffer
 
 class StunMessageSerializer {
     fun serialize(message: StunMessage): DatagramPacket {
+        val output = serializeBytes(message)
+        return DatagramPacket(output, output.size)
+    }
+
+    fun serializeBytes(message: StunMessage): ByteArray {
         val outputSizeBytes = message.getTotalLengthBytes()
         val buffer = ByteBuffer.allocate(outputSizeBytes)
         writeHeader(buffer, message.header)
         writeAttributes(buffer, message.attributes)
-        val output = buffer.array()
-        return DatagramPacket(output, output.size)
+        return buffer.array()
     }
 
     private fun writeHeader(buffer: ByteBuffer, header: StunHeader) {

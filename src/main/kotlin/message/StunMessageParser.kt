@@ -18,6 +18,7 @@ class StunMessageParser(
                 header = header,
                 attributes = attributes
             ),
+            rawBytes = packet.data
         )
     }
 }

@@ -1,6 +1,7 @@
 package com.hal.stunner
 
 import com.hal.stunner.config.StunServerConfiguration
+import com.hal.stunner.handler.StunHandler
 import com.hal.stunner.message.StunMessageParser
 import com.hal.stunner.message.StunMessageSerializer
 import kotlinx.coroutines.launch
@@ -16,7 +17,7 @@ class StunServer(
 ) {
     fun listen() {
         val socket = DatagramSocket(config.port)
-        val byteArray = ByteArray(100)
+        val byteArray = ByteArray(100) // TODO: is this the right size?
         val packet = DatagramPacket(byteArray, byteArray.size)
 
         socket.use { safeSocket ->
@@ -34,9 +35,9 @@ class StunServer(
         transmitResponse: (DatagramPacket) -> Unit,
     ) {
         runBlocking {
-            launch {
-                // runs async
-                transmitResponse(handlePacket(packet))
+            launch { // runs async
+                val response = handlePacket(packet)
+                transmitResponse(response)
             }
         }
     }
