@@ -25,13 +25,12 @@ class StunHandler(
             throw NotImplementedError("handle is not implemented")
         }
 
-        val includeFingerprint = fingerprintAttributeValueValidator.maybeValidate(request.message, request.rawBytes)
-
         val builder = stunMessageBuilderFactory
             .fromTransactionId(request.message.header.transactionId)
             .addAttribute(buildXorMappedAddressStunAttribute(request))
 
-        if (includeFingerprint) {
+        if (fingerprintAttributeValueValidator.shouldValidate(request.message)) {
+            fingerprintAttributeValueValidator.validate(request.message, request.rawBytes)
             builder.withFingerprint()
         }
 

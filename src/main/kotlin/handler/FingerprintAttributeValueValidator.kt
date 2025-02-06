@@ -8,15 +8,12 @@ class FingerprintAttributeValueValidator(
     private val fingerprintCalculator: FingerprintCalculator
 ) {
 
-    fun maybeValidate(message: StunMessage, rawBytes: ByteArray): Boolean {
-        if (!message.hasAttributeOfType(StunAttributeType.FINGERPRINT)) {
-            return false
-        }
-        validate(message, rawBytes)
-        return true
+    fun shouldValidate(message: StunMessage): Boolean {
+        return message.hasAttributeOfType(StunAttributeType.FINGERPRINT)
     }
 
-    private fun validate(message: StunMessage, rawBytes: ByteArray) {
+    // returns whether or not the fingerprint was present, *NOT* whether or not it was valid
+    fun validate(message: StunMessage, rawBytes: ByteArray) {
         val fingerprintAttribute = message.getAttributeOfType(StunAttributeType.FINGERPRINT)!!
         if (message.attributes.last() != fingerprintAttribute) {
             throw StunAttributeValidationException("Fingerprint attribute not last attribute in message")

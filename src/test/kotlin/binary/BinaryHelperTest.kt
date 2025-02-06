@@ -3,8 +3,19 @@ package com.hal.stunner.binary
 import org.junit.jupiter.api.assertThrows
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
+import kotlin.test.assertEquals
 
 class BinaryHelperTest {
+
+    @Test
+    fun testGetBytesAsInt() {
+        val bytes = byteArrayOf(0x01, 0x11, 0x0f, 0x1, 0x71, 0x13)
+        val start = 2
+        val numBytes = 4
+        val bytesAsInt: Int = BinaryHelper.getBytesAsInt(bytes, start, numBytes)
+
+        assertEquals(251752723, bytesAsInt)
+    }
 
     @Test
     fun testByteArrayXorExtension() {
