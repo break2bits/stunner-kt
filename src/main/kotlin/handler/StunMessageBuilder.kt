@@ -17,6 +17,16 @@ class StunMessageBuilder(
     private val attributes = mutableListOf<StunAttribute>()
     private var addFingerprint = false
 
+    override fun equals(other: Any?): Boolean {
+        if (other == null || other !is StunMessageBuilder) {
+            return false
+        }
+
+        return other.stunMessageSerializer == stunMessageSerializer
+                && other.fingerprintCalculator == fingerprintCalculator
+                && transactionId.contentEquals(other.transactionId)
+    }
+
     fun build(): StunMessage {
         val partialMessage = StunMessage(
             header = StunHeader(
